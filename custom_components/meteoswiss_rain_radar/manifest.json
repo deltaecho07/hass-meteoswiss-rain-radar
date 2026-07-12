@@ -1,11 +1,11 @@
 {
   "domain": "meteoswiss_rain_radar",
   "name": "MeteoSwiss Rain Radar",
-  "version": "0.1.0",
-  "documentation": "https://github.com/deltaecho07/hass-meteoswiss-rain-radar",
-  "issue_tracker": "https://github.com/deltaecho07/hass-meteoswiss-rain-radar/issues",
   "codeowners": ["@deltaecho07"],
   "config_flow": false,
-  "requirements": ["h5py", "numpy", "pyproj", "httpx"],
-  "iot_class": "cloud_polling"
+  "documentation": "https://github.com/deltaecho07/hass-meteoswiss-rain-radar",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/deltaecho07/hass-meteoswiss-rain-radar/issues",
+  "requirements": ["h5py", "httpx", "numpy", "pyproj"],
+  "version": "0.1.0"
 }
