@@ -1,0 +1,13 @@
+homeassistant
+pytest
+pytest-asyncio 
+pytest-httpx
+pytest-homeassistant-custom-component
+ruff
+mypy
+
+# runtime dependencies of integration
+h5py
+numpy
+pyproj
+httpx
