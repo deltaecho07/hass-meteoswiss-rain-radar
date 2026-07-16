@@ -133,10 +133,6 @@ class MeteoSwissRainRadarCoordinator(
             CONF_RADIUS,
             self.entry.data[CONF_RADIUS],
         ),
-        threshold=self.entry.options.get(
-            CONF_THRESHOLD,
-            self.entry.data[CONF_THRESHOLD],
-        ),
       )
       self._schedule_next_update()
       return RadarResult(
