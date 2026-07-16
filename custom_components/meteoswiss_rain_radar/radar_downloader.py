@@ -7,10 +7,14 @@ from .const import METEOSWISS_API_BASE_URL
 
 class RadarDownloader:
   def __init__(self):
-    self._client = httpx.AsyncClient(timeout=30)
+    self._client = None
+  
+  async def async_init(self):
+    self._client = await httpx.AsyncClient(timeout=30)
   
   async def close(self):
-    await self._client.aclose()
+    if self._client:
+      await self._client.aclose()
 
   @staticmethod
   def build_filename(dt: datetime) -> str:

@@ -19,6 +19,7 @@ async def async_setup_entry(
         hass,
         entry,
     )
+    await coordinator.downloader.async_init()
     await coordinator.async_config_entry_first_refresh()
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
@@ -36,8 +37,7 @@ async def async_unload_entry(
     entry: MeteoSwissRainRadarConfigEntry,
 ) -> bool:
     coordinator = entry.runtime_data
-    coordinator.stop()
-    await coordinator.downloader.close()
+    await coordinator.stop()
     return await hass.config_entries.async_unload_platforms(
         entry,
         PLATFORMS,

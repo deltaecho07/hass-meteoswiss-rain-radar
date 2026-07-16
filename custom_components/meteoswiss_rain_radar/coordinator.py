@@ -44,7 +44,8 @@ class MeteoSwissRainRadarCoordinator(
     def start(self):
         self._schedule_next_update()
 
-    def stop(self):
+    async def stop(self):
+        await self.downloader.close()
         if self._remove_listener:
             self._remove_listener()
             self._remove_listener = None
