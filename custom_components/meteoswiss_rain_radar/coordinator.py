@@ -11,8 +11,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
+    UpdateFailed
 )
-from homeassistant.exceptions import UpdateFailed
 
 from .const import DOMAIN, CONF_RADIUS, CONF_THRESHOLD
 from .detector import RainDetector
