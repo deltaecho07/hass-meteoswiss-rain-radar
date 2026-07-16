@@ -2,7 +2,7 @@
   "domain": "meteoswiss_rain_radar",
   "name": "MeteoSwiss Rain Radar",
   "codeowners": ["@deltaecho07"],
-  "config_flow": false,
+  "config_flow": true,
   "documentation": "https://github.com/deltaecho07/hass-meteoswiss-rain-radar",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/deltaecho07/hass-meteoswiss-rain-radar/issues",
