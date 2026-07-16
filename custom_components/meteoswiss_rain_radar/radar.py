@@ -11,7 +11,6 @@ from .geo import wgs84_to_grid
 
 @dataclass(slots=True)
 class RadarData:
-    filename: str
     rain_mask: np.ndarray
     ul_x: int
     ul_y: int
@@ -20,7 +19,6 @@ class RadarData:
     @classmethod
     def from_bytes(
         cls,
-        filename: str,
         data: bytes,
         threshold: float = 0.2,
     ) -> "RadarData":
@@ -44,7 +42,6 @@ class RadarData:
             rain_mask = radar.astype(np.float32) > threshold
 
         return cls(
-            filename=filename,
             rain_mask=rain_mask,
             ul_x=ul_x,
             ul_y=ul_y,

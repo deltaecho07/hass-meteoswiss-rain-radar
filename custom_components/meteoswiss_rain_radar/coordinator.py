@@ -15,6 +15,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 
 from .const import DOMAIN, CONF_RADIUS, CONF_THRESHOLD
+from .radar import RadarData
 from .detector import RainDetector
 from .radar_downloader import RadarDownloader
 from .models import RadarResult
@@ -38,7 +39,6 @@ class MeteoSwissRainRadarCoordinator(
         self.entry = entry
         self.downloader = RadarDownloader()
         self.detector = RainDetector()
-        self._last_filename = None
         self._remove_listener = None
 
     def start(self):
@@ -119,11 +119,14 @@ class MeteoSwissRainRadarCoordinator(
         raise UpdateFailed(
           f"Radar data for {self.downloader.build_url(timestamp)[1]} not yet available, retrying in 15 seconds."
         )
-      radar = await self.downloader.fetch_radar(timestamp)
-      self._last_filename = radar.filename
+      radar_bytes = await self.downloader.fetch_radar(timestamp)
+      radar_data = RadarData.from_bytes(radar_bytes, threshold=self.entry.options.get(
+        CONF_THRESHOLD,
+        self.entry.data[CONF_THRESHOLD],
+      ))
 
       rain, distance = self.detector.detect(
-        radar,
+        radar_data,
         latitude=self.entry.data["latitude"],
         longitude=self.entry.data["longitude"],
         radius_km=self.entry.options.get(
@@ -137,7 +140,7 @@ class MeteoSwissRainRadarCoordinator(
       )
       self._schedule_next_update()
       return RadarResult(
-        radar=radar,
+        radar=radar_data,
         rain=rain,
         distance_km=distance,
       )

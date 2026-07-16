@@ -40,12 +40,11 @@ def fake_radar_bytes() -> bytes:
 
 def test_from_bytes_parses_metadata_and_applies_threshold(fake_radar_bytes):
     with patch(WGS84_TO_GRID_PATH, return_value=(123, 456)) as mock_grid:
-        result = RadarData.from_bytes("test.h5", fake_radar_bytes, threshold=0.2)
+        result = RadarData.from_bytes(fake_radar_bytes, threshold=0.2)
 
     # wgs84_to_grid must be called with (lat, lon), matching the source order.
     mock_grid.assert_called_once_with(47.0, 7.5)
 
-    assert result.filename == "test.h5"
     assert result.ul_x == 123
     assert result.ul_y == 456
     assert result.scale == 1
@@ -57,7 +56,7 @@ def test_from_bytes_parses_metadata_and_applies_threshold(fake_radar_bytes):
 
 def test_from_bytes_default_threshold(fake_radar_bytes):
     with patch(WGS84_TO_GRID_PATH, return_value=(0, 0)):
-        result = RadarData.from_bytes("test.h5", fake_radar_bytes)
+        result = RadarData.from_bytes(fake_radar_bytes)
 
     assert result.rain_mask.dtype == np.bool_
 
@@ -68,7 +67,7 @@ def test_from_bytes_threshold_boundary_is_exclusive():
     data = _build_fake_h5_bytes(radar_array, ul_lon=8.0, ul_lat=46.5, xscale=1)
 
     with patch(WGS84_TO_GRID_PATH, return_value=(0, 0)):
-        result = RadarData.from_bytes("boundary.h5", data, threshold=0.2)
+        result = RadarData.from_bytes(data, threshold=0.2)
 
     np.testing.assert_array_equal(result.rain_mask, np.array([[False, True]]))
 
@@ -78,7 +77,7 @@ def test_from_bytes_uses_correct_scale():
     data = _build_fake_h5_bytes(radar_array, ul_lon=8.0, ul_lat=46.5, xscale=500)
 
     with patch(WGS84_TO_GRID_PATH, return_value=(0, 0)):
-        result = RadarData.from_bytes("scale.h5", data)
+        result = RadarData.from_bytes(data)
 
     assert result.scale == 500
     assert isinstance(result.scale, int)
