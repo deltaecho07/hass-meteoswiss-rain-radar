@@ -9,9 +9,6 @@ class RadarDownloader:
   def __init__(self):
     self._client = None
   
-  async def async_init(self):
-    self._client = await httpx.AsyncClient(timeout=30)
-  
   async def close(self):
     if self._client:
       await self._client.aclose()
@@ -41,6 +38,8 @@ class RadarDownloader:
         timestamp: datetime,
     ) -> bool:
     _, url = self.build_url(timestamp)
+    if not self._client:
+      self._client = httpx.AsyncClient(timeout=30)
     response = await self._client.head(url,headers={"Cache-Control": "no-cache"})
     return response.status_code == 200
   
@@ -49,6 +48,8 @@ class RadarDownloader:
         timestamp: datetime,
     ) -> BytesIO:
     _, url = self.build_url(timestamp)
+    if not self._client:
+      self._client = httpx.AsyncClient(timeout=30)
     response = await self._client.get(url,headers={"Cache-Control": "no-cache"})
     response.raise_for_status()
     return BytesIO(response.content)
