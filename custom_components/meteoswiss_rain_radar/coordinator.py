@@ -109,7 +109,7 @@ class MeteoSwissRainRadarCoordinator(
     async def _async_update_data(
       self,
     ) -> RadarResult:
-      timestamp = self.downloader.expected_timestamp()
+      timestamp = self._expected_timestamp()
       if not await self.downloader.radar_exists(
         timestamp,
       ):
@@ -117,7 +117,7 @@ class MeteoSwissRainRadarCoordinator(
             retry=True,
         )
         return self.data
-      radar = await self.downloader.fetch(timestamp)
+      radar = await self.downloader.fetch_radar(timestamp)
       self._last_filename = radar.filename
 
       rain, distance = self.detector.detect(
