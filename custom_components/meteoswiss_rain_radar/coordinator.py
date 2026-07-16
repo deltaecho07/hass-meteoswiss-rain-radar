@@ -117,7 +117,7 @@ class MeteoSwissRainRadarCoordinator(
       ):
         self._schedule_next_update(retry=True)
         raise UpdateFailed(
-          f"Radar data for {timestamp} not yet available, retrying in 15 seconds."
+          f"Radar data for {self.downloader.build_url(timestamp)[1]} not yet available, retrying in 15 seconds."
         )
       radar = await self.downloader.fetch_radar(timestamp)
       self._last_filename = radar.filename
