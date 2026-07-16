@@ -29,6 +29,8 @@ class DistanceSensor(
     
     @property
     def native_value(self):
+        if self.coordinator.data is None:
+            return None
         return self.coordinator.data.distance_km
     
 async def async_setup_entry(hass, entry, async_add_entities):

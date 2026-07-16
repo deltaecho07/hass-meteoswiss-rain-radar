@@ -23,6 +23,8 @@ class RainBinarySensor(
 
     @property
     def is_on(self):
+        if self.coordinator.data is None:
+            return False
         return self.coordinator.data.rain
 
 

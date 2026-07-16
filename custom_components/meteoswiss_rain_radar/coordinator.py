@@ -12,6 +12,7 @@ from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
 )
+from homeassistant.exceptions import UpdateFailed
 
 from .const import DOMAIN, CONF_RADIUS, CONF_THRESHOLD
 from .detector import RainDetector
@@ -113,10 +114,10 @@ class MeteoSwissRainRadarCoordinator(
       if not await self.downloader.radar_exists(
         timestamp,
       ):
-        self._schedule_next_update(
-            retry=True,
+        self._schedule_next_update(retry=True)
+        raise UpdateFailed(
+          f"Radar data for {timestamp} not yet available, retrying in 15 seconds."
         )
-        return self.data
       radar = await self.downloader.fetch_radar(timestamp)
       self._last_filename = radar.filename
 
