@@ -20,20 +20,19 @@ class RainBinarySensor(
         self._attr_unique_id = (
             f"{entry.entry_id}_rain"
         )
-    
-    @staticmethod
-    async def async_setup_entry(hass, entry, async_add_entities):
-        coordinator = hass.data[DOMAIN][entry.entry_id]
-
-        async_add_entities(
-            [
-                RainBinarySensor(
-                    coordinator,
-                    entry,
-                )
-            ]
-        )
 
     @property
     def is_on(self):
         return self.coordinator.data.rain
+
+
+async def async_setup_entry(hass, entry, async_add_entities):
+  coordinator = hass.data[DOMAIN][entry.entry_id]
+  async_add_entities(
+      [
+        RainBinarySensor(
+            coordinator,
+            entry,
+            )
+          ]
+      )

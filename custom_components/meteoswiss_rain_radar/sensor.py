@@ -27,19 +27,18 @@ class DistanceSensor(
             f"{entry.entry_id}_distance"
         )
     
-    @staticmethod
-    async def async_setup_entry(hass, entry, async_add_entities):
-        coordinator = hass.data[DOMAIN][entry.entry_id]
-
-        async_add_entities(
-            [
-                DistanceSensor(
-                    coordinator,
-                    entry,
-                )
-            ]
-        )
-
     @property
     def native_value(self):
         return self.coordinator.data.distance_km
+    
+async def async_setup_entry(hass, entry, async_add_entities):
+  coordinator = hass.data[DOMAIN][entry.entry_id]
+
+  async_add_entities(
+    [
+      DistanceSensor(
+      coordinator,
+      entry,
+      )
+    ]
+  )
