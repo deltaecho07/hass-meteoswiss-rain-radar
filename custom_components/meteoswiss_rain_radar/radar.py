@@ -22,8 +22,13 @@ class RadarData:
         data: bytes,
         threshold: float = 0.2,
     ) -> "RadarData":
+        if isinstance(data, BytesIO):
+            data.seek(0)
+            h5_data = data
+        else:
+            h5_data = BytesIO(data)
 
-        with h5py.File(BytesIO(data), "r") as h5:
+        with h5py.File(h5_data, "r") as h5:
 
             radar = h5["dataset1/data1/data"][:]
 
