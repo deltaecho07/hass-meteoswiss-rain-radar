@@ -15,5 +15,5 @@ CONF_RADIUS = "radius"
 CONF_THRESHOLD = "threshold"
 
 METEOSWISS_API_BASE_URL = (
-    "https://data.geo.admin.ch/ch.meteoschweiz.ogd-radar-precip/items/"
+    "https://data.geo.admin.ch/ch.meteoschweiz.ogd-radar-precip/"
 )
