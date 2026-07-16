@@ -13,14 +13,14 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
 )
 
-from .const import DOMAIN
+from .const import DOMAIN, CONF_RADIUS, CONF_THRESHOLD
 from .detector import RainDetector
 from .radar_downloader import RadarDownloader
 from .models import RadarResult
 
 _LOGGER = logging.getLogger(__name__)
 
-class SwissRainRadarCoordinator(
+class MeteoSwissRainRadarCoordinator(
     DataUpdateCoordinator[RadarResult]
 ):
 
@@ -40,18 +40,46 @@ class SwissRainRadarCoordinator(
         self._last_filename = None
         self._remove_listener = None
 
+    def start(self):
+        self._schedule_next_update()
 
-    async def async_initialize(self):
-        await self.async_refresh()
-        self._schedule_next()
-    
+    def stop(self):
+        if self._remove_listener:
+            self._remove_listener()
+            self._remove_listener = None
 
-    def _schedule(
+    def _schedule_next_update(
       self,
-      when: datetime,
+      retry: bool = False,
       ):
+
       if self._remove_listener:
         self._remove_listener()
+
+      now = datetime.now(UTC)
+
+      if retry:
+        when = now + timedelta(seconds=15)
+
+      else:
+        minute = ((now.minute // 5) + 1) * 5
+        if minute == 60:
+          when = now.replace(
+              minute=0,
+              second=20,
+              microsecond=0,
+          ) + timedelta(hours=1)
+        else:
+          when = now.replace(
+              minute=minute,
+              second=20,
+              microsecond=0,
+          )
+
+      _LOGGER.debug(
+        "Next radar update: %s",
+        when,
+        )
 
       self._remove_listener = async_track_point_in_utc_time(
         self.hass,
@@ -59,11 +87,10 @@ class SwissRainRadarCoordinator(
         when,
       )
     
-
     async def _scheduled_refresh(
-      self,
-      now,
-      ) -> None:
+    self,
+    now,
+    ):
       await self.async_refresh()
 
     
@@ -79,38 +106,34 @@ class SwissRainRadarCoordinator(
         tzinfo=UTC,
         )
     
-    async def _async_update_data(self):
-      timestamp = self._expected_timestamp()
-
-      filename, _ = self.downloader.build_url(timestamp)
-      
-      if filename == self._last_filename:
-        self._schedule(
-            timestamp + timedelta(minutes=5, seconds=20)
+    async def _async_update_data(
+      self,
+    ) -> RadarResult:
+      timestamp = self.downloader.expected_timestamp()
+      if not await self.downloader.radar_exists(
+        timestamp,
+      ):
+        self._schedule_next_update(
+            retry=True,
         )
         return self.data
-      
-      if not await self.downloader.radar_exists(timestamp):
-        self._schedule(
-            datetime.now(UTC) + timedelta(seconds=15)
-        )
-        return self.data
-      
       radar = await self.downloader.fetch(timestamp)
       self._last_filename = radar.filename
 
       rain, distance = self.detector.detect(
-        radar=radar,
+        radar,
         latitude=self.entry.data["latitude"],
         longitude=self.entry.data["longitude"],
-        radius_km=self.entry.data["radius"],
-        threshold=self.entry.data["threshold"],
+        radius_km=self.entry.options.get(
+            CONF_RADIUS,
+            self.entry.data[CONF_RADIUS],
+        ),
+        threshold=self.entry.options.get(
+            CONF_THRESHOLD,
+            self.entry.data[CONF_THRESHOLD],
+        ),
       )
-
-      self._schedule(
-        timestamp + timedelta(minutes=5, seconds=20)
-      )
-
+      self._schedule_next_update()
       return RadarResult(
         radar=radar,
         rain=rain,

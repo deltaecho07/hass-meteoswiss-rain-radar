@@ -1,4 +1,4 @@
-DOMAIN = "swiss_rain_radar"
+DOMAIN = "meteoswiss_rain_radar"
 VERSION = "0.1.0"
 
 PLATFORMS = [
