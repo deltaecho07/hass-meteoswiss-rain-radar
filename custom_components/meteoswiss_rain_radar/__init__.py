@@ -3,7 +3,7 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import PLATFORMS
+from .const import DOMAIN, PLATFORMS
 from .coordinator import MeteoSwissRainRadarCoordinator
 
 type MeteoSwissRainRadarConfigEntry = ConfigEntry[MeteoSwissRainRadarCoordinator]
@@ -20,6 +20,8 @@ async def async_setup_entry(
         entry,
     )
     await coordinator.async_config_entry_first_refresh()
+    hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN][entry.entry_id] = coordinator
     coordinator.start()
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(

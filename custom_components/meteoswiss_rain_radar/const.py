@@ -1,9 +1,11 @@
+from homeassistant.const import Platform
+
 DOMAIN = "meteoswiss_rain_radar"
 VERSION = "0.1.0"
 
 PLATFORMS = [
-    "binary_sensor",
-    "sensor",
+    Platform.SENSOR,
+    Platform.BINARY_SENSOR,
 ]
 
 DEFAULT_RADIUS = 5.0
