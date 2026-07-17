@@ -1,5 +1,6 @@
 from homeassistant.components.sensor import (
     SensorEntity,
+    SensorDeviceClass,
 )
 from homeassistant.const import UnitOfLength
 from .const import DOMAIN
@@ -32,7 +33,24 @@ class DistanceSensor(
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.distance_km
-    
+
+class LastUpdateSensor(
+    MeteoSwissRainRadarEntity,
+    SensorEntity,
+):
+  _attr_name = "Last Update"
+
+  _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+  def __init__(self, coordinator, entry):
+    super().__init__(coordinator, entry)
+    self._attr_unique_id = f"{entry.entry_id}_last_radar"
+
+  @property
+  def native_value(self):
+     return self.coordinator.data.last_update if self.coordinator.data is not None else None
+
+
 async def async_setup_entry(hass, entry, async_add_entities):
   coordinator = hass.data[DOMAIN][entry.entry_id]
 
@@ -41,6 +59,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
       DistanceSensor(
       coordinator,
       entry,
-      )
+      ),
+      LastUpdateSensor(
+        coordinator,
+        entry,
+      ),
     ]
   )

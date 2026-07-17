@@ -34,7 +34,7 @@ class MeteoSwissRainRadarEntity(
             name="MeteoSwiss Rain Radar",
             manufacturer="MeteoSwiss",
             model="Radar Rain Detection",
-            configuration_url="https://github.com/deltaecho07/hass-meteoswiss-rain-radar'",
+            configuration_url="https://github.com/deltaecho07/hass-meteoswiss-rain-radar",
         )
 
     @property
