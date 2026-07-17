@@ -21,7 +21,7 @@ class RadarData:
         cls,
         data: bytes,
         threshold: float = 0.2,
-    ) -> "RadarData":
+    ) -> RadarData:
         if isinstance(data, BytesIO):
             data.seek(0)
             h5_data = data

@@ -120,6 +120,7 @@ class MeteoSwissRainRadarCoordinator(
           f"Radar data for {self.downloader.build_url(timestamp)[1]} not yet available, retrying in 15 seconds."
         )
       radar_bytes = await self.downloader.fetch_radar(timestamp)
+
       radar_data = RadarData.from_bytes(radar_bytes, threshold=self.entry.options.get(
         CONF_THRESHOLD,
         self.entry.data[CONF_THRESHOLD],
@@ -139,4 +140,5 @@ class MeteoSwissRainRadarCoordinator(
         radar=radar_data,
         rain=rain,
         distance_km=distance,
+        updated=timestamp,
       )
