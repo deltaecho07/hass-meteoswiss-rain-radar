@@ -9,4 +9,4 @@ class RadarResult:
     radar: RadarData
     rain: bool
     distance_km: float | None
-    updated: datetime
+    last_update: datetime

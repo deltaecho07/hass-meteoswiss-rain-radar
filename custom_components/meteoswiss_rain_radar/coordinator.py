@@ -145,6 +145,6 @@ class MeteoSwissRainRadarCoordinator(
         radar=radar_data,
         rain=rain,
         distance_km=distance,
-        updated=timestamp,
+        last_update=timestamp,
       )
       return self.result_data
