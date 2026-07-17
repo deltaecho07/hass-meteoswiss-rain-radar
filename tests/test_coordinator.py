@@ -132,7 +132,7 @@ def test_schedule_next_update_rounds_up_to_next_5_minutes(coordinator, freezer):
     with patch(f"{MODULE}.async_track_point_in_utc_time") as mock_track:
         coordinator._schedule_next_update()
 
-    expected_when = now.replace(minute=10, second=20, microsecond=0)
+    expected_when = now.replace(minute=10, second=50, microsecond=0)
     mock_track.assert_called_once_with(
         coordinator.hass, coordinator._scheduled_refresh, expected_when
     )
@@ -146,7 +146,7 @@ def test_schedule_next_update_rolls_over_to_next_hour(coordinator, freezer):
     with patch(f"{MODULE}.async_track_point_in_utc_time") as mock_track:
         coordinator._schedule_next_update()
 
-    expected_when = now.replace(minute=0, second=20, microsecond=0) + timedelta(
+    expected_when = now.replace(minute=0, second=50, microsecond=0) + timedelta(
         hours=1
     )
     mock_track.assert_called_once_with(
