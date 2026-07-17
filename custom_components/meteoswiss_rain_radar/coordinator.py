@@ -39,6 +39,7 @@ class MeteoSwissRainRadarCoordinator(
         self.entry = entry
         self.downloader = RadarDownloader()
         self.detector = RainDetector()
+        self.result_data: RadarResult | None = None
         self._remove_listener = None
 
     def start(self):
@@ -68,13 +69,13 @@ class MeteoSwissRainRadarCoordinator(
         if minute == 60:
           when = now.replace(
               minute=0,
-              second=20,
+              second=50,
               microsecond=0,
           ) + timedelta(hours=1)
         else:
           when = now.replace(
               minute=minute,
-              second=20,
+              second=50,
               microsecond=0,
           )
 
@@ -91,7 +92,7 @@ class MeteoSwissRainRadarCoordinator(
     
     async def _scheduled_refresh(
     self,
-    now,
+    _now,
     ):
       await self.async_refresh()
 
@@ -116,6 +117,10 @@ class MeteoSwissRainRadarCoordinator(
         timestamp,
       ):
         self._schedule_next_update(retry=True)
+
+        if self.result_data is not None:
+           return self.result_data
+        
         raise UpdateFailed(
           f"Radar data for {self.downloader.build_url(timestamp)[1]} not yet available, retrying in 15 seconds."
         )
@@ -136,9 +141,10 @@ class MeteoSwissRainRadarCoordinator(
         ),
       )
       self._schedule_next_update()
-      return RadarResult(
+      self.result_data = RadarResult(
         radar=radar_data,
         rain=rain,
         distance_km=distance,
         updated=timestamp,
       )
+      return self.result_data
