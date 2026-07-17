@@ -1,4 +1,5 @@
 {
   "name": "MeteoSwiss Rain Radar",
-  "render_readme": true
+  "render_readme": true,
+  "country": ["CH"]
 }

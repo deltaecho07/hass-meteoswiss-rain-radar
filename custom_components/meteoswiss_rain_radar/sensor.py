@@ -38,7 +38,7 @@ class LastUpdateSensor(
     MeteoSwissRainRadarEntity,
     SensorEntity,
 ):
-  _attr_name = "Last Update"
+  _attr_name = "Last Radar Image"
 
   _attr_device_class = SensorDeviceClass.TIMESTAMP
 
