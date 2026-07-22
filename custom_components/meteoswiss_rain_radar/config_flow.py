@@ -51,7 +51,7 @@ class SwissRainRadarConfigFlow(
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        return OptionsFlow(config_entry)
+        return OptionsFlow()
 
 
 class OptionsFlow(config_entries.OptionsFlow):
