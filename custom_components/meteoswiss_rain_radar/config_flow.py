@@ -26,7 +26,7 @@ class SwissRainRadarConfigFlow(
             user_input["longitude"] = self.hass.config.longitude
 
             return self.async_create_entry(
-                title="Swiss Rain Radar",
+                title="MeteoSwiss Rain Radar",
                 data=user_input,
             )
 
@@ -55,9 +55,6 @@ class SwissRainRadarConfigFlow(
 
 
 class OptionsFlow(config_entries.OptionsFlow):
-    def __init__(self, config_entry):
-        self.config_entry = config_entry
-
     async def async_step_init(self, user_input=None):
         if user_input is not None:
             return self.async_create_entry(
