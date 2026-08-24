@@ -212,12 +212,14 @@ def test_expected_timestamp_at_exact_5_minute_mark(coordinator, freezer):
 async def test_async_update_data_raises_when_radar_not_yet_available(coordinator):
     coordinator.downloader.radar_exists.return_value = False
 
-    with patch.object(coordinator, "_schedule_next_update") as mock_schedule:
-        with pytest.raises(UpdateFailed):
-            await coordinator._async_update_data()
+    with (
+        patch.object(coordinator, "_schedule_next_update") as mock_schedule,
+        pytest.raises(UpdateFailed),
+    ):
+        await coordinator._async_update_data()
 
-    mock_schedule.assert_called_once_with(retry=True)
-    coordinator.downloader.fetch_radar.assert_not_awaited()
+        mock_schedule.assert_called_once_with(retry=True)
+        coordinator.downloader.fetch_radar.assert_not_awaited()
 
 
 @pytest.mark.asyncio

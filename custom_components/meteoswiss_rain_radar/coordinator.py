@@ -1,21 +1,18 @@
 from __future__ import annotations
 
-from datetime import UTC
-from datetime import datetime
-from datetime import timedelta
-
 import logging
+from datetime import UTC, datetime, timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, CONF_RADIUS, CONF_THRESHOLD
-from .radar import RadarData
+from .const import CONF_RADIUS, CONF_THRESHOLD, DOMAIN
 from .detector import RainDetector
-from .radar_downloader import RadarDownloader
 from .models import RadarResult
+from .radar import RadarData
+from .radar_downloader import RadarDownloader
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -116,7 +113,9 @@ class MeteoSwissRainRadarCoordinator(DataUpdateCoordinator[RadarResult]):
                 return self.result_data
 
             raise UpdateFailed(
-                f"Radar data for {self.downloader.build_url(timestamp)[1]} not yet available, retrying in 15 seconds."
+                "Radar data for "
+                f"{self.downloader.build_url(timestamp)[1]} not yet available, "
+                "retrying in 15 seconds."
             )
         radar_bytes = await self.downloader.fetch_radar(timestamp)
 

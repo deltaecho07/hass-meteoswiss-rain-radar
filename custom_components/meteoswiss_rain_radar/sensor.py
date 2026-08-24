@@ -1,10 +1,10 @@
 from homeassistant.components.sensor import (
-    SensorEntity,
     SensorDeviceClass,
+    SensorEntity,
 )
 from homeassistant.const import UnitOfLength
-from .const import DOMAIN
 
+from .const import DOMAIN
 from .entity import MeteoSwissRainRadarEntity
 
 

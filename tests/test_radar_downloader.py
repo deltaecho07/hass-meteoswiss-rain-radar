@@ -6,15 +6,14 @@ Requires: pip install pytest pytest-asyncio pytest-httpx
 
 from __future__ import annotations
 
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from io import BytesIO
 
 import httpx
 import pytest
 
-from custom_components.meteoswiss_rain_radar.radar_downloader import RadarDownloader
 from custom_components.meteoswiss_rain_radar.const import METEOSWISS_API_BASE_URL
-
+from custom_components.meteoswiss_rain_radar.radar_downloader import RadarDownloader
 
 # A fixed timestamp used across tests so the generated filename/url is deterministic.
 TEST_DT = datetime(2024, 3, 5, 14, 30, tzinfo=UTC)  # 2024, day-of-year 065 (%j), 14:30

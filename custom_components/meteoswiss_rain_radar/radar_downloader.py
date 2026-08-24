@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 from datetime import datetime
 from io import BytesIO
+
 import httpx
 
 from .const import METEOSWISS_API_BASE_URL
