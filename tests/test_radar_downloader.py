@@ -5,7 +5,7 @@ Requires: pip install pytest pytest-asyncio pytest-httpx
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from io import BytesIO
 
 import httpx
@@ -16,7 +16,7 @@ from custom_components.meteoswiss_rain_radar.const import METEOSWISS_API_BASE_UR
 
 
 # A fixed timestamp used across tests so the generated filename/url is deterministic.
-TEST_DT = datetime(2024, 3, 5, 14, 30)  # 2024, day-of-year 065 (%j), 14:30
+TEST_DT = datetime(2024, 3, 5, 14, 30,tzinfo=timezone.utc)  # 2024, day-of-year 065 (%j), 14:30
 EXPECTED_FILENAME = "rzc240651430nl.001.h5"
 EXPECTED_URL = f"{METEOSWISS_API_BASE_URL}20240305-ch/{EXPECTED_FILENAME}"
 
