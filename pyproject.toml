@@ -1,6 +1,6 @@
 [project]
 name = "MeteoSwiss Rain Radar"
-version = "0.1.0"
+version = "0.1.2"
 description = "Custom Home Assistant component for MeteoSwiss rain radar"
 maintainers = [
   { name = "Remo", email = "deltaecho07@gmail.com" },

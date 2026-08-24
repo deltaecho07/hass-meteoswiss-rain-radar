@@ -19,7 +19,7 @@ class RadarDownloader:
         day = dt.strftime("%j")
         time = dt.strftime("%H%M")
 
-        return f"rzc{year}{day}{time}vl.001.h5"
+        return f"rzc{year}{day}{time}nl.001.h5"
   
   @staticmethod
   def build_url(
