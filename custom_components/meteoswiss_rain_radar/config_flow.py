@@ -71,7 +71,6 @@ class OptionsFlow(config_entries.OptionsFlow):
                         self.config_entry.data[CONF_RADIUS],
                     ),
                 ): vol.Coerce(float),
-
                 vol.Optional(
                     CONF_THRESHOLD,
                     default=self.config_entry.options.get(

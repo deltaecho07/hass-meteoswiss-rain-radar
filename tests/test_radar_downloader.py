@@ -3,9 +3,10 @@
 Requires: pip install pytest pytest-asyncio pytest-httpx
 
 """
+
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from io import BytesIO
 
 import httpx
@@ -16,7 +17,7 @@ from custom_components.meteoswiss_rain_radar.const import METEOSWISS_API_BASE_UR
 
 
 # A fixed timestamp used across tests so the generated filename/url is deterministic.
-TEST_DT = datetime(2024, 3, 5, 14, 30,tzinfo=timezone.utc)  # 2024, day-of-year 065 (%j), 14:30
+TEST_DT = datetime(2024, 3, 5, 14, 30, tzinfo=UTC)  # 2024, day-of-year 065 (%j), 14:30
 EXPECTED_FILENAME = "rzc240651430nl.001.h5"
 EXPECTED_URL = f"{METEOSWISS_API_BASE_URL}20240305-ch/{EXPECTED_FILENAME}"
 
@@ -33,6 +34,7 @@ async def downloader():
 # Pure helper methods - no HTTP involved
 # ---------------------------------------------------------------------------
 
+
 def test_build_filename():
     filename = RadarDownloader.build_filename(TEST_DT)
     assert filename == EXPECTED_FILENAME
@@ -47,6 +49,7 @@ def test_build_url():
 # ---------------------------------------------------------------------------
 # radar_exists
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_radar_exists_true(downloader, httpx_mock):
@@ -79,6 +82,7 @@ async def test_radar_exists_false(downloader, httpx_mock):
 # ---------------------------------------------------------------------------
 # fetch_radar
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_fetch_radar_success(downloader, httpx_mock):

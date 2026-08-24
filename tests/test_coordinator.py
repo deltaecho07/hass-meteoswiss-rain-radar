@@ -8,6 +8,7 @@ Adjust the import below to match your actual module path, e.g.:
         MeteoSwissRainRadarCoordinator,
     )
 """
+
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
@@ -63,6 +64,7 @@ def coordinator(hass):
 # __init__
 # ---------------------------------------------------------------------------
 
+
 def test_init_sets_up_attributes(hass):
     entry = make_entry()
     entry.add_to_hass(hass)
@@ -78,6 +80,7 @@ def test_init_sets_up_attributes(hass):
 # ---------------------------------------------------------------------------
 # start / stop
 # ---------------------------------------------------------------------------
+
 
 def test_start_schedules_next_update(coordinator):
     with patch.object(coordinator, "_schedule_next_update") as mock_schedule:
@@ -110,6 +113,7 @@ async def test_stop_without_listener_does_not_raise(coordinator):
 # ---------------------------------------------------------------------------
 # _schedule_next_update
 # ---------------------------------------------------------------------------
+
 
 def test_schedule_next_update_retry_adds_15_seconds(coordinator, freezer):
     now = datetime(2024, 1, 1, 10, 7, 30, tzinfo=UTC)
@@ -146,9 +150,7 @@ def test_schedule_next_update_rolls_over_to_next_hour(coordinator, freezer):
     with patch(f"{MODULE}.async_track_point_in_utc_time") as mock_track:
         coordinator._schedule_next_update()
 
-    expected_when = now.replace(minute=0, second=50, microsecond=0) + timedelta(
-        hours=1
-    )
+    expected_when = now.replace(minute=0, second=50, microsecond=0) + timedelta(hours=1)
     mock_track.assert_called_once_with(
         coordinator.hass, coordinator._scheduled_refresh, expected_when
     )
@@ -169,6 +171,7 @@ def test_schedule_next_update_cancels_existing_listener(coordinator, freezer):
 # _scheduled_refresh
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_scheduled_refresh_calls_async_refresh(coordinator):
     with patch.object(
@@ -182,6 +185,7 @@ async def test_scheduled_refresh_calls_async_refresh(coordinator):
 # ---------------------------------------------------------------------------
 # _expected_timestamp
 # ---------------------------------------------------------------------------
+
 
 def test_expected_timestamp_floors_to_5_minutes(coordinator, freezer):
     freezer.move_to(datetime(2024, 1, 1, 10, 7, 42, 123456, tzinfo=UTC))
@@ -202,6 +206,7 @@ def test_expected_timestamp_at_exact_5_minute_mark(coordinator, freezer):
 # ---------------------------------------------------------------------------
 # _async_update_data
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_async_update_data_raises_when_radar_not_yet_available(coordinator):
@@ -227,16 +232,15 @@ async def test_async_update_data_success_uses_options_over_data(coordinator):
     fake_radar_data = MagicMock(name="RadarData")
     coordinator.detector.detect.return_value = (True, 3.5)
 
-    with patch.object(coordinator, "_schedule_next_update") as mock_schedule, patch(
-        f"{MODULE}.RadarData"
-    ) as mock_radar_data_cls:
+    with (
+        patch.object(coordinator, "_schedule_next_update") as mock_schedule,
+        patch(f"{MODULE}.RadarData") as mock_radar_data_cls,
+    ):
         mock_radar_data_cls.from_bytes.return_value = fake_radar_data
 
         result = await coordinator._async_update_data()
 
-    mock_radar_data_cls.from_bytes.assert_called_once_with(
-        radar_bytesio, threshold=0.5
-    )
+    mock_radar_data_cls.from_bytes.assert_called_once_with(radar_bytesio, threshold=0.5)
     coordinator.detector.detect.assert_called_once_with(
         fake_radar_data,
         latitude=47.0,
@@ -253,24 +257,21 @@ async def test_async_update_data_success_uses_options_over_data(coordinator):
 @pytest.mark.asyncio
 async def test_async_update_data_success_falls_back_to_entry_data(coordinator):
     # options empty -> should fall back to entry.data values
-    coordinator.hass.config_entries.async_update_entry(
-        coordinator.entry, options={}
-    )
+    coordinator.hass.config_entries.async_update_entry(coordinator.entry, options={})
     coordinator.downloader.radar_exists.return_value = True
     radar_bytesio = BytesIO(b"raw-bytes")
     coordinator.downloader.fetch_radar.return_value = radar_bytesio
     coordinator.detector.detect.return_value = (False, None)
 
-    with patch.object(coordinator, "_schedule_next_update"), patch(
-        f"{MODULE}.RadarData"
-    ) as mock_radar_data_cls:
+    with (
+        patch.object(coordinator, "_schedule_next_update"),
+        patch(f"{MODULE}.RadarData") as mock_radar_data_cls,
+    ):
         mock_radar_data_cls.from_bytes.return_value = MagicMock()
 
         await coordinator._async_update_data()
 
-    mock_radar_data_cls.from_bytes.assert_called_once_with(
-        radar_bytesio, threshold=0.2
-    )
+    mock_radar_data_cls.from_bytes.assert_called_once_with(radar_bytesio, threshold=0.2)
     coordinator.detector.detect.assert_called_once_with(
         mock_radar_data_cls.from_bytes.return_value,
         latitude=47.0,
